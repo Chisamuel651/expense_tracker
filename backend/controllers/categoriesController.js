@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Category = require('../model/Category');
+const Transaction = require('../model/Transaction');
 
 
 const categoriesController = {
@@ -44,10 +45,51 @@ const categoriesController = {
 
     //!updateCategory
     update: asyncHandler(async (req, res) => {
+        const {id: categoryId} = req.params;
+        const { name } = req.body;
+        const normalizedName = name.toLowerCase();
+        const category = await Category.findById(categoryId);
+        if(!category || category.user.toString() !== req.user.toString()){
+            throw new Error('Category not found or user not authorized');
+        }
+        //! update transaction category
+        const oldName = category.name;
+        category.name = normalizedName;
+        // category.type = name;
+        const updatedCategory = await category.save();
+        // update transaction
+        if(oldName !== updatedCategory){
+            await Transaction.updateMany(
+                {
+                    user: req.user,
+                    category: oldName,
+                },{
+                    $set:{category: updatedCategory.name}
+                }
+            );
+        }
+        res.json(updatedCategory);
     }),
 
     //! deleteCategory
     delete: asyncHandler(async (req, res) => {
+        const category = await Category.findById(req.params.id);
+        if(category && category.user.toString() === req.user.toString()){
+            //! update transactions that have this category
+            const defaultCategory = 'Uncategorized';
+            await Transaction.updateMany({
+                user: req.user, category: category.name
+            },
+            {
+                $set:{category: defaultCategory}
+            }
+        );
+        // remove category
+        await Category.findByIdAndDelete(req.params.id);
+        res.json({message: 'Category has been removed and transaction updated'})
+        }else{
+            res.json({message: 'User not authorized'});
+        }
     }),
 };
 

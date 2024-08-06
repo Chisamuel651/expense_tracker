@@ -21,12 +21,6 @@ const transactionsController = {
         res.status(201).json(transaction);
     }),
     
-    // //!readTransaction
-    // lists: asyncHandler(async (req, res) => {
-    //     const transactions = await Transaction.find({ user: req.user });
-    //     res.json(transactions);
-    // }),
-    
     //!filterTransaction
     getFilteredTransactions: asyncHandler(async (req, res) => {
         const { startDate, endDate, type, category } = req.query
@@ -58,10 +52,28 @@ const transactionsController = {
 
     //!updateTransaction
     update: asyncHandler(async (req, res) => {
+        //! find transaction by id
+        const transaction = await Transaction.findById(req.params.id);
+        if(transaction && transaction.user.toString() === req.user.toString()){
+            transaction.category = req.body.category || transaction.category;
+            transaction.amount = req.body.amount || transaction.amount;
+            transaction.date = req.body.date || transaction.date;
+            transaction.description = req.body.description || transaction.description;
+
+            // update
+            const updatedTransaction = await transaction.save();
+            res.json(updatedTransaction)
+        }
     }),
 
     //! deleteTransaction
     delete: asyncHandler(async (req, res) => {
+        //! find transaction by id
+        const transaction = await Transaction.findById(req.params.id);
+        if(transaction && transaction.user.toString() === req.user.toString()){
+            await Transaction.findByIdAndDelete(req.params.id);
+            res.json({ message: 'Transaction deleted!' })
+        }
     }),
 };
 

@@ -10,17 +10,23 @@ transactionRouter.post(
     isAuthenticated,
     transactionsController.create
 );
-//! read
-// transactionRouter.get(
-//     '/api/v1/transactions/lists', 
-//     isAuthenticated,
-//     transactionsController.lists
-// );
-//! filterTransaction
+//! read and filterTransaction
 transactionRouter.get(
     '/api/v1/transactions/lists', 
     isAuthenticated,
     transactionsController.getFilteredTransactions
+);
+//! update
+transactionRouter.put(
+    '/api/v1/transactions/update/:id', 
+    isAuthenticated,
+    transactionsController.update
+);
+//! delete
+transactionRouter.delete(
+    '/api/v1/transactions/delete/:id', 
+    isAuthenticated,
+    transactionsController.delete
 );
 
 
