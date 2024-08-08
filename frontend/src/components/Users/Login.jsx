@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { loginAPI } from "../../services/users/userServices";
 import AlertMessage from "../Alert/AlertMessage";
@@ -16,13 +17,16 @@ const validationSchema = Yup.object({
 })
 
 const LoginForm = () => {
+  // instance of navigate
+  const navigate = useNavigate()
   // dispatch
   const dispatch = useDispatch();
   // mutation
   const {mutateAsync, isPending, isError, error, isSuccess} = useMutation({
     mutationFn: loginAPI,
     mutationKey: ['login']
-  })
+  });
+  
   const formik = useFormik({
     initialValues: {
       email:"",
@@ -45,7 +49,14 @@ const LoginForm = () => {
     }
   });
   
-  // console.log({isPending, isError, error, isSuccess});
+  // redirect
+  useEffect(() => {
+    setTimeout(() => {
+      if(isSuccess){
+        navigate('/profile');
+      }
+    }, 3000);
+  }, [isPending, isError, error, isSuccess])
   
 
   return (
