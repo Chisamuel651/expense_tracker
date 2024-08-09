@@ -102,7 +102,7 @@ const HeroSection = () => {
               Finally, a hassle-free way to manage my finances. The insights
               feature is a game changer!
             </p>
-            <p className="mt-4 font-bold">- Carlson</p>
+            <p className="mt-4 font-bold">- Chi Samuel</p>
           </div>
         </div>
       </div>

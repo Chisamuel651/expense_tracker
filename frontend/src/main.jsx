@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {Provider} from 'react-redux';
@@ -14,7 +15,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       <QueryClientProvider client={client}>
         <App />
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </Provider>
   </React.StrictMode>,
