@@ -16,7 +16,6 @@ mongoose.connect(uri).then(() => console.log('DB is connected')).catch((e) => co
 //! cors config
 const corsOptions = {
     origin: "http://localhost:5173",
-    origin: 'https://66b5f70837ff3cfe8450a552--solumentics-tracker.netlify.app/',
     credentials:true
 };
 app.use(cors(corsOptions));
